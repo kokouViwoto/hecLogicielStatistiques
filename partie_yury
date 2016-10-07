@@ -82,6 +82,7 @@ colnames(table_occurence_annee) = c("Annee", "Occurence") #definition du nom de 
 #5
 table_occurence_annee = table_occurence_annee[order(as.numeric(as.character(table_occurence_annee$Annee))),] #ordonne mes donnees en ordre croissant en fonction de l'annee
 
+table_occurence_annee
 
 #Affiche le graphique du nombre de crashs qui a eu lieu a travers le temps
 plot(x = table_occurence_annee$Annee, y = table_occurence_annee$Occurence, type="l", main= "Crashs à travers le Temps", xlab="Années", ylab="Nombre de crashs")
@@ -105,18 +106,19 @@ for(i in unique(table_de_fatalites_par_annee$Annees)){
   list_des_sommes_des_fatalites = c(list_des_sommes_des_fatalites, sum_des_fatalites_par_annee)
 }
 
-table_des_sommes_des_fatalites = data.frame(list_des_sommes_des_fatalites, unique(Annee))
-table_des_sommes_des_fatalites
+table_des_sommes_des_fatalites = data.frame(list_des_sommes_des_fatalites, as.numeric(as.character(unique(Annee))))
 
 colnames(table_des_sommes_des_fatalites) = c("Sommes_des_Fatalites", "Annees")
 
 table_des_sommes_des_fatalites = na.omit(table_des_sommes_des_fatalites) #omet les valeurs manquantes
 
-table_des_sommes_des_fatalites
+table_des_sommes_des_fatalites = table_des_sommes_des_fatalites[order(as.numeric(as.character(table_des_sommes_des_fatalites$Annees))),] #ordonne mes donnees en ordre croissant en fonction de l'annee
 
-# I have to find a way to make this appear without the points.. I think making this appear without the missing values would work
+table_des_sommes_des_fatalites = na.omit(table_des_sommes_des_fatalites) #omet les valeurs manquantes
 
-plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalites$Sommes_des_Fatalites, type = "l", na.rm = TRUE)
+#Affiche le graphique du nombre de fatalités à travers le temps
+
+plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalites$Sommes_des_Fatalites, type = "h", main= "Fatalités à travers le Temps", xlab="Années", ylab="Nombre de fatalités")
 
 #####################################################################################
 
