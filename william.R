@@ -4,8 +4,8 @@
 # MAKE SURE TO SET THE CURRENT DIRECTORY AS THE WORKING DIRECTORY
 # In Rstudio, click on 'Session' -> 'Set Working Directory' -> 'To Source File Location'
 
-# import packages
-#library(plyr)
+#import packages
+library(plyr)
 #library(countrycode)
 
 # Read data - We assume the data are located in a folder named data placed in the same location as the code
@@ -18,11 +18,33 @@ names(crashes)[names(crashes) == 'Flight..'] <- 'Flight'
 # Preview the data
 #head(crashes)
 
-
 canada = c('Nunavut', 'Quebec', 'Northwest Territories', 'Ontario',
                 'British Columbia', 'Alberta', 'Saskatchewan', 'Manitoba',
                 'Yukon', 'Newfoundland and Labrador', 'New Brunswick',
                 'Nova Scotia', 'Prince Edward Island')
+
+errors = list( "(Bolivia" = "Bolivia", "(Russia" = "Russia", 
+               "Afghanstan" = 'Afghanistan', 'Airzona' = 'Arizona',
+               "Alaksa"="Alaska", "Alakska"="Alaska", "Arazona"="Arizona",
+               "Aregntina" = "Argentina", "Atlantic"="Atlantic Ocean", 
+               "AtlantiOcean"="Atlantic Ocean", "BaltiSea"="Baltic Sea", 
+               "Boliva" = "Bolivia", "Bosnia-Herzegovina"= "Bosnia Herzegovina",
+               "British Columbia Canada" = "British Columbia", 
+               "Belgium Congo"="Belgian Congo (Zaire)",
+               "Belgian Congo" = "Belgian Congo (Zaire)", "Bulgeria"="Bulgaria",
+               "Cailifornia"="California", "Calilfornia"="California",
+               "Cameroons"="Cameroon", "Canada2"="Canada", "Cape Verde Islands"="Cape Verde",
+               "Chili"="Chili", "Coloado"="Colorado", "Comoro Islands" = "Comoros",
+               "Comoros Islands" = "Comoros", "D.C."="United States", "Deleware"="Delaware"
+               )
+
+fix_country_name <- function(input){
+  if(input %in% names(errors))
+    return(errors[[input]])
+  else
+    return(input)
+}
+
 
 # Add a new column for the Category and the country
 crashes = as.data.frame( t(
@@ -49,6 +71,9 @@ crashes = as.data.frame( t(
           loc3 = 'Sea'
         country = loc3 
       }
+      country = fix_country_name(country)
+      #stop()
+      
       
       if( !is.na(match(country, state.abb)) ||  !is.na(match(country, state.name)) )
         country = "United States"
@@ -58,22 +83,17 @@ crashes = as.data.frame( t(
       return(c(row, Category=cat, Country=country))
     }
   )
-)
-)
-
-# Unique crash sites (countries):
-crash_sites = 
-  unique(   # remove duplicates from vectors
-    apply(crashes, 1, function(row) {  # use apply instead of loop
-      return(c(row['Country']))
-    }
-  )
+ )
 )
 
-# Aggregate crashes on destinations
-#number_crash_by_location = aggregate( list("Number of Accidents"), nfrequency = 1,
-#                                by=list(Country=crashes$Country), 
-#                                FUN=sum, na.rm=TRUE, na.action=NULL)
+# crash frequencies
+crash_freq = count(crashes, 'Country')
+crash_freq = crash_freq[order(crash_freq$freq, decreasing = TRUE),]
+names(crash_freq)[names(crash_freq) == 'freq'] <- 'Number_Plane_Crashes'
+
+cat_freq = count(crashes, 'Category')
+cat_freq = cat_freq[order(cat_freq$freq, decreasing = TRUE),]
+names(cat_freq)[names(cat_freq) == 'freq'] <- 'Number_Plane_Crashes'
 
 # Questions:
 # 1. Quelles sont les Top 10 des destinations dangereuses (souligner la plus dangereuse)?  Bar chart (destination / nombre d’accidents) (william)
