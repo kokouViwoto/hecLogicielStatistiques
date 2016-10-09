@@ -15,7 +15,7 @@ airPlanesCrashesData = read.csv(DATA_FILE_NAME,
 canada = c('Nunavut', 'Quebec', 'Northwest Territories', 'Ontario',
            'British Columbia', 'Alberta', 'Saskatchewan', 'Manitoba',
            'Yukon', 'Newfoundland and Labrador', 'New Brunswick',
-           'Nova Scotia', 'Prince Edward Island')
+           'Nova Scotia', 'Prince Edward Island',"Canada")
 
 errors = list( "(Bolivia"="Bolivia", "(Russia"="Russia", 
                "Afghanstan"='Afghanistan', 'Airzona'='Arizona',
@@ -40,6 +40,18 @@ errors = list( "(Bolivia"="Bolivia", "(Russia"="Russia",
                "Inodnesia"="Indonesia", "Amsterdam"="Netherlands"
 )
 
+AFRICAN_COUNTRIES <- c("Abidjan","Algeria","Angola","Benin","Botswana","Burkina","Faso","Burundi","Cabo","Verde",
+                      "Cameroon","African","Chad","Comoros","Congo","Cogo","Ivoiry","Djibouti","Egypt","Guinea",
+                      "Eritrea","Ethiopia","Gabon","Gambia","Ghana","Guinea","Bissau","Kenya","Lesotho",
+                      "Liberia","Libya","Madagascar","Malawi","Mali","Mauritania","Mauritius","Morocco",
+                      "Mozambique","Namibia","Niger","Nigeria","Rwanda","Sao","Tome","Principe","Senegal",
+                      "Seychelles","Sierra","Leone","Somalia","Africa","Sudan","Swaziland","Tanzania",
+                      "Togo","Tunisia","Uganda","Zambia","Zimbabwe","Zaire","kinshasa","Morrocco")
+
+WESTERN_HEMISPHERE <- c("Argentina","Bolivia","Brazil","Chile","Colombia","Costa","Rica","Cuba","Dominican","Ecuador",
+                        "Salvador","Guatemala","Haiti","Honduras","Mexico","Nicaragua","Panama","Paraguay","Peru",
+                        "Uruguay","Venezuela")
+
 sea_words = c('Sea', 'Ocean', 'Channel', 'Mediterranean', 'miles', 'Gulf', 'Strait', 'off')
 
 EUROPE_COUNTRIES <- c("Albania","Andorra","Armenia","Austria","Azerbaijan","Belarus","Belgium","Bosnia",
@@ -48,43 +60,62 @@ EUROPE_COUNTRIES <- c("Albania","Andorra","Armenia","Austria","Azerbaijan","Bela
                       "Kosovo","Latvia","Liechtenstein","Lithuania","Luxembourg","Macedonia","Malta","Moldova",
                       "Monaco","Montenegro","Netherlands","Norway","Poland","Portugal","Romania","Russia",
                       "Marino","Serbia","Slovakia","Slovenia","Spain","Sweden","Switzerland","Turkey","Ukraine",
-                      "Kingdom","Vatican","Holy")
+                      "Kingdom","Vatican","Holy","London","England","Roumania","Romainia","Amsterdam","holland")
 
+SOUTHEAST_ASIA_COUNTRIES <- c("Australia","Brunei","Darussalam","Burma","Cambodia","Indonesia","Laos","Malaysia",
+                              "Zealand","Islands","Island","Philippines","Philipines","Singapore","Thailand","Vietnam","Asian",
+                              "Bangladesh","Asia","India","Iraq","Kazakhstan","Maldives","Nepal","Pakistan","Sri",
+                              "Lanka","Uzbekistan","Hong","Kong","Macau","Mongolia","Taiwan","China","Japan","Korea")
+
+
+US_CITIES <- c("Alaska","Alabama","Arkansas","Arizona","California","Colorado","Connecticut","Washington","Delaware",
+               "Florida","Georgia","Hawaii","Iowa","Idaho","Illinois","Indiana","Kansas","Kentucky","Louisiana","Massachusetts",
+               "Maryland","Maine","Michigan","Minnesota","Missouri","Mississippi","Montana","Carolina","Dakota","Nebraska",
+               "Hampshire","Jersey","Mexico","Nevada","York","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode","Island",
+               "Carolina","Dakota","Tennessee","Tennesee","Texas","Utah","Virginia","Vermont","Washington","Wisconsin","Wyoming",
+               "United","States","Arazona","Ilinois","Oklohoma","Angeles","boston","Airzona")
+
+MIDDLE_EAST <- c("Bahrain","Cyprus","Egypt","Iran","Iraq","Israel","Jordan","Kuwait","Lebanon","Oman",
+                 "Qatar","Saudi","Arabia","Syria","Turkey","Arab","Emirates","Yemen")
+  
 isValidEntry <- function(entry) {
-  if(is.na(entry) || is.null(entry) || length(entry) == 0){
+  if(entry == "" || is.na(entry) || is.null(entry) || length(entry) == 0){
     return(FALSE)
   }
   return(TRUE)
 }
 
-getCrashLocation <- function(location){
+getCrashLocation <- function(locationArg){
   
-  if(!isValidEntry(location)){
+  if(!isValidEntry(locationArg)){
     return("INVALID")
   }
   
-  if(location %in% names(errors)){
-    return(errors[[location]])
+  location = locationArg
+  if(locationArg %in% names(errors)){
+    location = errors[[location]]
   }
   
   if(location %in% canada){
     return("CANADA")
   }
   
-  if(location %in% sea_words){
-    return("SEA")
+  for(seaPlace in sea_words){
+    
+    lowerCaseLocation = tolower(location)
+    lowerSeaPlace = tolower(seaPlace)
+    if(grepl(lowerSeaPlace, lowerCaseLocation,ignore.case = TRUE)){
+      return("SEA")
+    }
   }
- 
-  seaWithRegex <- "\\bSEA\\b"
   
-  if(grepl(seaWithRegex, location,ignore.case = TRUE)){
-    return("SEA")
-  }
-  
-  locationWithRegex <- "\\bVIRGINIA\\b"
-  
-  if(grepl(locationWithRegex, location,ignore.case = TRUE)){
-    return("VIRGINIA")
+  for(middleEastCountry in MIDDLE_EAST){
+    
+    lowerCaseLocation = tolower(location)
+    lowerMiddleEastCountry = tolower(middleEastCountry)
+    if(grepl(lowerMiddleEastCountry, lowerCaseLocation,ignore.case = TRUE)){
+      return("MIDDLE_EAST")
+    }
   }
   
   canadaWithRegex <- "\\bCANADA\\b"
@@ -98,6 +129,42 @@ getCrashLocation <- function(location){
     europWithRegex <- paste("\\b",europeCountry,"\\b", sep="")
     if(grepl(europWithRegex, location,ignore.case = TRUE)){
       return("EUROPE")
+    }
+  }
+  
+  for(africanCountry in AFRICAN_COUNTRIES){
+    
+    lowerCaseLocation = tolower(location)
+    lowerAfricanCountry = tolower(africanCountry)
+    if(grepl(lowerAfricanCountry, lowerCaseLocation,ignore.case = TRUE)){
+      return("AFRICA")
+    }
+  }
+  
+  for(westernCountry in WESTERN_HEMISPHERE){
+    
+    lowerCaseLocation = tolower(location)
+    lowerWesternCountry = tolower(westernCountry)
+    if(grepl(lowerWesternCountry, lowerCaseLocation,ignore.case = TRUE)){
+      return("WESTERN_HEMISPHERE")
+    }
+  }
+  
+  for(southEastCountry in SOUTHEAST_ASIA_COUNTRIES){
+    
+    lowerCaseLocation = tolower(location)
+    lowerSouthEastCountry = tolower(southEastCountry)
+    if(grepl(lowerSouthEastCountry, lowerCaseLocation,ignore.case = TRUE)){
+      return("SOUTHEAST_ASIA_COUNTRIES")
+    }
+  }
+  
+  for(usCity in US_CITIES){
+    
+    lowerCaseLocation = tolower(location)
+    lowerUsCity = tolower(usCity)
+    if(grepl(lowerUsCity, lowerCaseLocation,ignore.case = TRUE)){
+      return("UNITED_STATES")
     }
   }
   return(location)
@@ -142,6 +209,7 @@ monthAndLocationObjectFromDataSet <- createMonthAndLocationObjectFromDataSet(air
 
 
 library(plyr)
-head(count(monthsList, c("Month", "Locations")))
-#crashesCountByMonthAndByDestination = aggregate(monthsList$Month, list(month=monthsList$Month,location=monthsList$Locations), FUN=sum,na.rm=TRUE)
+monthAndLocationObjectFromDataSet <- count(monthAndLocationObjectFromDataSet, c("Month", "Locations"))
+monthAndLocationObjectFromDataSet <- monthAndLocationObjectFromDataSet[order(monthAndLocationObjectFromDataSet$Month, monthAndLocationObjectFromDataSet$freq),]
 
+monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$freq > 20,]
