@@ -212,4 +212,16 @@ library(plyr)
 monthAndLocationObjectFromDataSet <- count(monthAndLocationObjectFromDataSet, c("Month", "Locations"))
 monthAndLocationObjectFromDataSet <- monthAndLocationObjectFromDataSet[order(monthAndLocationObjectFromDataSet$Month, monthAndLocationObjectFromDataSet$freq),]
 
-monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$freq > 20,]
+monthAndLocationObjectFromDataSet <- monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$freq > 20,]
+
+legendLabels <- c("AFRICA","MIDDLE_EAST","SEA","ASIA","HEMISPHERE","EUROPE","UNITED_STATES")
+legendColours <- c("red", "orange", "blue", "yellow", "green", "grey", "orange")
+for(i in 1:12){
+  monthCalculation <- monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$Month == i, ]
+  plotName <- paste("Number of crashes for ",month.name[i], sep="")
+  barplot(monthCalculation$freq, main=plotName, 
+          xlab="Countries", ylab="Crash places",
+          cex.lab = 1.0, cex.main = 1.4, beside=TRUE, col=legendColours,
+          legend.text = legendLabels,
+          args.legend = list(x = "topleft"))
+}
