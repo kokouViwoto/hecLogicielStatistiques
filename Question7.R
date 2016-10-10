@@ -220,7 +220,7 @@ for(i in 1:12){
   monthCalculation <- monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$Month == i, ]
   plotName <- paste("Number of crashes for ",month.name[i], sep="")
   barplot(monthCalculation$freq, main=plotName, 
-          xlab="Countries", ylab="Crash places",
+          xlab="Countries", ylab="Crash Places Count",
           cex.lab = 1.0, cex.main = 1.4, beside=TRUE, col=legendColours,
           legend.text = legendLabels,
           args.legend = list(x = "topleft"))
