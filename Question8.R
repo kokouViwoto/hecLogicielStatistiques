@@ -1,9 +1,12 @@
 
-DATA_PATH="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
+DATA_PATH_FOLDER="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
 DATA_FILE_NAME="Airplane_Crashes_and_Fatalities_Since_1908.csv"
 
+if (length(DATA_PATH_FOLDER) == 0 || length(DATA_FILE_NAME) == 0 ){ 
+  stop("THE DATA_FILE_NAME AND DATA_PATH_FOLDER variables should be set")
+}
 
-setwd(DATA_PATH)
+setwd(DATA_PATH_FOLDER)
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                header=TRUE,
