@@ -1,10 +1,6 @@
 
-DATA_PATH_FOLDER="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
-DATA_FILE_NAME="Airplane_Crashes_and_Fatalities_Since_1908.csv"
-
-if (length(DATA_PATH_FOLDER) == 0 || length(DATA_FILE_NAME) == 0 ){ 
-  stop("THE DATA_FILE_NAME AND DATA_PATH_FOLDER variables should be set")
-}
+DATA_PATH_FOLDER="Change Me. This should be the path to the folder that contains the dataset"
+DATA_FILE_NAME="Change Me. This should be the dataset file name"
 
 setwd(DATA_PATH_FOLDER)
 
@@ -112,8 +108,6 @@ legendLabels <- c("AIR_FRANCE","TRANS_CANADA","AIR_ONTARIO","AIR_INDIA","AIR_CAR
 legendColours <- c("red", "orange", "blue", "yellow", "green", "grey", "orange", "black")
 
 plotName <- "Comparaison de morts par operateur aérien"
-barplot(fatalitiesSumGroupByOperator$x, main=plotName, 
-          xlab="Operateur", ylab="Nombre total de morts",
-          cex.lab = 1.0, cex.main = 1.4, beside=TRUE, col=legendColours,
-          legend.text = legendLabels,
-          args.legend = list(x = "topright"))
+par(mfrow=c(2,1))
+barplot(fatalitiesSumGroupByOperator$x, names=legendLabels, main=plotName, ylim = c(0, 4000), ylab="Nombre total de morts",
+          cex.lab = 1.0, cex.main = 1.4, beside=TRUE, col=legendColours, las=2)
