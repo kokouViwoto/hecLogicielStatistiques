@@ -1,10 +1,9 @@
-#Yury Sambale 
+DATA_PATH_FOLDER="Change Me. This should be the path to the folder that contains the dataset"
+DATA_FILE_NAME="Change Me. This should be the dataset file name"
 
-#R project 
+setwd(DATA_PATH_FOLDER)
 
-setwd("C:\\Users\\Laurent\\OneDrive\\Documents\\Logiciels statistiques pour lanalyse de donnees\\Projet en R")
-
-airplane_table = read.csv("Airplane_Crashes_1908.csv") 
+airplane_table = read.csv(DATA_FILE_NAME) 
 
 summary(airplane_table)
 
@@ -59,9 +58,15 @@ afficher_map = function(visited){
   mp 
 }
 
+
+
+
+
+#####################################################################################
+#Question 1: Le nombre de crash a travers le temps
 #####################################################################################
 
-#Question: Le nombre de crash a travers le temps
+
 
 #préparation des données
 
@@ -87,9 +92,16 @@ table_occurence_annee
 #Affiche le graphique du nombre de crashs qui a eu lieu a travers le temps
 plot(x = table_occurence_annee$Annee, y = table_occurence_annee$Occurence, type="l", main= "Crashs à travers le Temps", xlab="Années", ylab="Nombre de crashs")
 
+
+
+
+
+
+#####################################################################################
+#Question 3: Nombre de fatalites par Annees travers le temps
 #####################################################################################
 
-#Question: Nombre de fatalites par Annees travers le temps
+
 
 #preparation des donnees
 
@@ -120,9 +132,16 @@ table_des_sommes_des_fatalites = na.omit(table_des_sommes_des_fatalites) #omet l
 
 plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalites$Sommes_des_Fatalites, type = "h", main= "Fatalités à travers le Temps", xlab="Années", ylab="Nombre de fatalités")
 
+
+
+
+
+#####################################################################################
+#Question 6: Plus grand nombres de fatalites par location 
 #####################################################################################
 
-#Question: Plus grand nombres de fatalites par location 
+
+
 
 sum_des_fatalites_par_location = NULL #initialisation de la variable
 list_des_sommes_des_fatalites_par_location = NULL #initialisation de la variable
@@ -158,11 +177,15 @@ for(i in 1:50){
 
 afficher_map(top_50_villes_par_fatalites_en_string) #appel de la fonction afficher_map 
 
+
+
 #####################################################################################
 
 #Question: le nombre de crashs par endroit(location) 
 #question repondu en affichant un tableau de type data.frame et en representant sur un map 
 #le top 50 des locations ou il y a eu des crash
+#####################################################################################
+
 
 #preparation des données
 unique_location = unique(airplane_table$Location) #retourne les lieux d'accident sans repetition
@@ -192,6 +215,4 @@ for(i in 1:50){
 }
 
 afficher_map(vecteur_de_ville_frequence_de_crashs)
-
-
 
