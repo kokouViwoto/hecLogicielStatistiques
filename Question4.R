@@ -1,10 +1,6 @@
 
-DATA_PATH_FOLDER="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
-DATA_FILE_NAME="Airplane_Crashes_and_Fatalities_Since_1908.csv"
-
-if (length(DATA_PATH_FOLDER) == 0 || length(DATA_FILE_NAME) == 0 ){ 
-  stop("THE DATA_FILE_NAME AND DATA_PATH_FOLDER variables should be set")
-}
+DATA_PATH_FOLDER="Change Me. This should be the path to the folder that contains the dataset"
+DATA_FILE_NAME="Change Me. This should be the dataset file name"
 
 setwd(DATA_PATH_FOLDER)
 
