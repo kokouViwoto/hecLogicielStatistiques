@@ -1,10 +1,6 @@
 
-DATA_PATH_FOLDER="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
-DATA_FILE_NAME="Airplane_Crashes_and_Fatalities_Since_1908.csv"
-
-if (length(DATA_PATH_FOLDER) == 0 || length(DATA_FILE_NAME) == 0 ){ 
-  stop("THE DATA_FILE_NAME AND DATA_PATH_FOLDER variables should be set")
-}
+DATA_PATH_FOLDER="Change Me. This should be the path to the folder that contains the dataset"
+DATA_FILE_NAME="Change Me. This should be the dataset file name"
 
 setwd(DATA_PATH_FOLDER)
 
@@ -219,7 +215,8 @@ monthAndLocationObjectFromDataSet <- monthAndLocationObjectFromDataSet[monthAndL
 
 legendLabels <- c("AFRICA","MIDDLE_EAST","SEA","ASIA","HEMISPHERE","EUROPE","UNITED_STATES")
 legendColours <- c("red", "orange", "blue", "yellow", "green", "grey", "orange")
-for(i in 1:12){
+par(mfrow=c(1,2))
+for(i in 1:6){
   monthCalculation <- monthAndLocationObjectFromDataSet[monthAndLocationObjectFromDataSet$Month == i, ]
   plotName <- paste("Number of crashes for ",month.name[i], sep="")
   barplot(monthCalculation$freq, main=plotName, 
