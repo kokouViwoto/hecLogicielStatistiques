@@ -1,21 +1,17 @@
-# Projet - 6-613-11 Logiciels statistiques pour analyse de donnees (S02) 
-# Nom: William Tankou - Matricule 11118098
 
-# MAKE SURE YOU SET THE CURRENT DIRECTORY AS THE WORKING DIRECTORY
-# In Rstudio, click on 'Session' -> 'Set Working Directory' -> 'To Source File Location'
+DATA_PATH_FOLDER="Change Me. This should be the path to the folder that contains the dataset"
+DATA_FILE_NAME="Change Me. This should be the dataset file name"
 
-#install.packages(ggplot2)
-#install.packages("data.table")
+setwd(DATA_PATH_FOLDER)
 
 #import packages
 library(plyr)
 library(data.table)
 
-
-#library(countrycode)
+#######################
 
 # Read data - We assume the data are located in a folder named data placed in the same location as the code
-crashes = read.csv("data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",", dec = ",", 
+crashes = read.csv(DATA_FILE_NAME, header=TRUE, sep=",", dec = ",", 
                    fill = TRUE, stringsAsFactors=TRUE)
 
 # Replace column name 'Flight..' by 'Flight' to keep our sanity
@@ -150,8 +146,16 @@ crashes = as.data.frame( t(
 
 crashes$Survival_Rate <- as.numeric(as.character(crashes$Survival_Rate))
 
-#*************  ANSWERS TO QUESTIONS: **************#
+
+
+
+
+
+
+#########################################################################################
 ### QUESTION 1 - DANGEROUS PLACES ###  
+#########################################################################################
+
 
 # top15 - accidents / country where crash happened
 crash_freq = count(crashes, 'CrashCountry')
@@ -208,7 +212,18 @@ barplot( top15_crash_dest_freq$Crashes_by_Destination, names.arg = top15_crash_d
 #         names.arg = mil_loc_freq$CrashCountry,
 #         ylim = c(0, 150), sub = "TOP10 - DESTINATIONS OF PLANE", col=colors)
 
-### Question 2- RISKIER PLANES CATEGORY ###
+
+
+
+
+#########################################################################################
+### QUESTION 5- RISKIER PLANES CATEGORY ###
+#########################################################################################
+
+
+
+
+
 cat_freq = count(crashes, 'Category')
 cat_freq = as.data.frame(cat_freq[order(cat_freq$freq, decreasing = TRUE),])
 names(cat_freq)[names(cat_freq) == 'freq'] <- 'Plane_Crashes_by_Category'
@@ -224,7 +239,7 @@ sur_freq[is.na(sur_freq)] = 'Unknown'
 sur_mil_freq = sur_freq[sur_freq$Category=='Military',]
 sur_com_freq = sur_freq[!sur_freq$Category=='Military',]
 
-#--- PLOTS QUESTION 2
+#--- PLOTS 
 colors = sample(colors)
 pie( cat_freq$Plane_Crashes_by_Category, labels = cat_freq$Category,
      sub="Categories of plane crashes", col=colors)
@@ -238,7 +253,16 @@ colors = sample(colors)
 pie( sur_com_freq$Plane_Crashes_Per_Surface, labels = sur_com_freq$Surface,
      sub="SURFACE - COMMERCIAL PLANES", col=colors)
 
-#### 3 - POURCENTAGE DE SURVIE ####
+
+
+
+
+#########################################################################################
+#### QUESTION 9 - POURCENTAGE DE SURVIE ##########################
+#########################################################################################
+
+
+
 chance_of_survival = aggregate( crashes$Survival_Rate, 
              by=list(crashes$Category, crashes$Activity), 
              FUN=mean, na.rm=TRUE, simplify=TRUE)
@@ -251,9 +275,11 @@ chance_com_freq$During_Trainig = paste("Commercial", chance_com_freq$During_Trai
 
 chance_freq = rbind( chance_mil_freq[,2-3], chance_com_freq[,2-3] )
 
+# PLOTS
 par(mfrow=c(1,1))
 colors = sample(colors)
 barplot( chance_freq$Survival_Rate, 
          names.arg = chance_freq$During_Trainig,
          ylim = c(0, 25), sub = "CHANCE OF SURVIVAL",
          col=colors, ylab = "Probability of Survival")
+
