@@ -1,31 +1,36 @@
 
-DATA_PATH="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
+DATA_PATH_FOLDER="/Users/kviwoto/Documents/CoursHEC/LogicielsStatistiques/Projet"
 DATA_FILE_NAME="Airplane_Crashes_and_Fatalities_Since_1908.csv"
 
+if (length(DATA_PATH_FOLDER) == 0 || length(DATA_FILE_NAME) == 0 ){ 
+  stop("THE DATA_FILE_NAME AND DATA_PATH_FOLDER variables should be set")
+}
 
-setwd(DATA_PATH)
+setwd(DATA_PATH_FOLDER)
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                header=TRUE,
                                blank.lines.skip = TRUE,
                                stringsAsFactors = FALSE)  # read csv file
 
-AIR_FRANCE <- list(name="AIR_FRANCE", keywords=c("Air","France"))
-AIR_CANADA <- list(name="AIR_CANADA", keywords=c("Air", "Canada"))
-TRANS_CANADA <- list(name="TRANS_CANADA", keywords=c("Trans","Canada"))
-AIR_ONTARIO <- list(name="AIR_ONTARIO", keywords=c("Air","Ontario"))
-AIR_INDIA <- list(name="AIR_INDIA", keywords=c("Air","India"))
-AIR_CARAIBES <- list(name="AIR_CARAIBES", keywords=c("Air", "Caraibes"))
-AIR_MADAGASCAR <- list(name="AIR_MADAGASCAR", keywords=c("Air","Madagascar"))
-AIR_NIAGARA <- list(name="AIR_NIAGARA", keywords=c("Air", "Niagara"))
-AIR_GUADELOUPE <- list(name="AIR_GUADELOUPE", keywords=c("Air", "guadeloupe"))
-AIR_AMERICA <- list(name="AIR_AMERICA", keywords=c("Air", "America"))
-AIR_MALI <- list(name="AIR_MALI", keywords=c("Air", "Mali"))
-DEUTSCHE_LUFTHANSA <- list(name="DEUTSCHE_LUFTHANSA", keywords=c("deutsche", "lufthansa"))
-CHINA_AIRLINES <- list(name="CHINA_AIRLINES", keywords=c("China", "Airlines"))
+AIR_FRANCE <- c("Air","France")
+AIR_CANADA <- c("Air", "Canada")
+TRANS_CANADA <- c("Trans","Canada")
+AIR_ONTARIO <- c("Air","Ontario")
+AIR_INDIA <- c("Air","India")
+AIR_CARAIBES <- c("Air", "Caraibes")
+AIR_MADAGASCAR <- c("Air","Madagascar")
+AIR_NIAGARA <- c("Air", "Niagara")
+AIR_GUADELOUPE <- c("Air", "guadeloupe")
+AIR_AMERICA <- c("Air", "America")
+AIR_MALI <- c("Air", "Mali")
+DEUTSCHE_LUFTHANSA <- c("deutsche", "lufthansa")
+CHINA_AIRLINES <- c("China", "Airlines")
 
-OPERATORS <- c(AIR_FRANCE,AIR_CANADA,TRANS_CANADA,AIR_ONTARIO,AIR_INDIA,AIR_CARAIBES,
-               AIR_MADAGASCAR,AIR_NIAGARA,AIR_GUADELOUPE,AIR_AMERICA,AIR_MALI,DEUTSCHE_LUFTHANSA,CHINA_AIRLINES)
+OPERATORS <- data.frame("AIR_FRANCE"=AIR_FRANCE, "AIR_CANADA"=AIR_CANADA,"TRANS_CANADA"=TRANS_CANADA,"AIR_ONTARIO"=AIR_ONTARIO,
+                        "AIR_INDIA"=AIR_INDIA,"AIR_CARAIBES"=AIR_CARAIBES,"AIR_MADAGASCAR"=AIR_MADAGASCAR,"AIR_NIAGARA"=AIR_NIAGARA,
+                        "AIR_GUADELOUPE"=AIR_GUADELOUPE,"AIR_AMERICA"=AIR_AMERICA,"AIR_MALI"=AIR_MALI,"DEUTSCHE_LUFTHANSA"=DEUTSCHE_LUFTHANSA,
+                        "CHINA_AIRLINES"=CHINA_AIRLINES)
 
 
 ## Enlever les blancs en debut en fin de chaines de caractères
@@ -49,11 +54,10 @@ wordContainsAllSelectedWords <- function(aWord, selectedWords){
   MATCHES_COUNT = 0
   lowerCaseWord <- tolower(aWord)
   
-  for(aSelectedWord in as.vector(selectedWords)){
-    lowerCaseSelectedWord = tolower(aSelectedWord)
-    print(selectedWords)
-    print(lowerCaseSelectedWord)
-    if(grepl(lowerCaseWord,lowerCaseSelectedWord,ignore.case = TRUE)){
+  for(i in 1:length(selectedWords)){
+    
+    lowerCaseSelectedWord = tolower(selectedWords[i])
+    if(grepl(lowerCaseSelectedWord,lowerCaseWord,ignore.case = TRUE)){
       MATCHES_COUNT = MATCHES_COUNT + 1
     }
   }
@@ -62,14 +66,13 @@ wordContainsAllSelectedWords <- function(aWord, selectedWords){
 }
 
 getOperatorName <- function(operatorArg){
-  for(i in 1:length(OPERATORS)){
-    if (i %% 2 == 0){
-      if (wordContainsAllSelectedWords(operatorArg,OPERATORS[i])){
-        return(OPERATORS[i-1])
-      }
+  
+  for (i in names(OPERATORS)) {
+    keywords <- OPERATORS[[i]]
+    if (wordContainsAllSelectedWords(operatorArg,keywords)){
+      return(names(OPERATORS[i]))
     }
   }
-  
   return("INVALID")
 }
 
@@ -88,7 +91,7 @@ createOperatorWithFatalitiesFrame <- function(dataFrameToTest) {
     operatorNamesList <- c()
     fatalitiesList <- c()
     
-    for(i in 1:40){
+    for(i in 1:nrow(dataFrameToTest)){
       operatorName <- getOperatorName(dataFrameToTest$Operator[i])
       fatality <- getFatality(dataFrameToTest$Fatalities[i])
       if(operatorName != "INVALID" && fatality != "INVALID"){
@@ -96,10 +99,21 @@ createOperatorWithFatalitiesFrame <- function(dataFrameToTest) {
         fatalitiesList <- c(fatalitiesList, fatality)
       }
     }
-    
     operatorWithFatalitiesFrame = data.frame("Operator"=operatorNamesList, "Fatality"=fatalitiesList) 
 }
 
 operatorWithFatalitiesFrame <- createOperatorWithFatalitiesFrame(airPlanesCrashesData)
 
-head(operatorWithFatalitiesFrame)
+fatalitiesSumGroupByOperator = aggregate(operatorWithFatalitiesFrame$Fatality, list(Operator=operatorWithFatalitiesFrame$Operator), FUN=sum,na.rm=TRUE)
+
+legendLabels <- c("AIR_FRANCE","TRANS_CANADA","AIR_ONTARIO","AIR_INDIA","AIR_CARAIBES","AIR_MADAGASCAR",
+                  "AIR_NIAGARA","AIR_GUADELOUPE","AIR_AMERICA","AIR_MALI","DEUTSCHE_LUFTHANSA","CHINA_AIRLINES")
+
+legendColours <- c("red", "orange", "blue", "yellow", "green", "grey", "orange", "black")
+
+plotName <- "Comparaison de morts par operateur aérien"
+barplot(fatalitiesSumGroupByOperator$x, main=plotName, 
+          xlab="Operateur", ylab="Nombre total de morts",
+          cex.lab = 1.0, cex.main = 1.4, beside=TRUE, col=legendColours,
+          legend.text = legendLabels,
+          args.legend = list(x = "topright"))
