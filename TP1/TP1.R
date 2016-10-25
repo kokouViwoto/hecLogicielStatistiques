@@ -63,7 +63,7 @@ afficher_map = function(visited){
 
 
 #####################################################################################
-#Question 1: Le nombre de crash a travers le temps
+#Nombre total de crash a travers le temps
 #####################################################################################
 
 
@@ -94,11 +94,8 @@ plot(x = table_occurence_annee$Annee, y = table_occurence_annee$Occurence, type=
 
 
 
-
-
-
 #####################################################################################
-#Question 3: Nombre de fatalites par Annees travers le temps
+#Nombre de fatalites par Annees travers le temps
 #####################################################################################
 
 
@@ -135,12 +132,9 @@ plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalit
 
 
 
-
 #####################################################################################
-#Question 6: Plus grand nombres de fatalites par location 
+#Plus grand nombres de fatalites par location 
 #####################################################################################
-
-
 
 
 sum_des_fatalites_par_location = NULL #initialisation de la variable
@@ -180,8 +174,7 @@ afficher_map(top_50_villes_par_fatalites_en_string) #appel de la fonction affich
 
 
 #####################################################################################
-
-#Question: le nombre de crashs par endroit(location) 
+#le nombre de crashs par endroit(location) 
 #question repondu en affichant un tableau de type data.frame et en representant sur un map 
 #le top 50 des locations ou il y a eu des crash
 #####################################################################################
@@ -371,12 +364,8 @@ crashes$Survival_Rate <- as.numeric(as.character(crashes$Survival_Rate))
 
 
 
-
-
-
-
 #########################################################################################
-### QUESTION 1 - DANGEROUS PLACES ###  
+### Quelles sont les places les plus dangereuses ###  
 #########################################################################################
 
 
@@ -440,10 +429,8 @@ barplot( top15_crash_dest_freq$Crashes_by_Destination, names.arg = top15_crash_d
 
 
 #########################################################################################
-### QUESTION 5- RISKIER PLANES CATEGORY ###
+### Quelles sont les catégories d'avion les plus dangereux
 #########################################################################################
-
-
 
 
 
@@ -478,10 +465,8 @@ pie( sur_com_freq$Plane_Crashes_Per_Surface, labels = sur_com_freq$Surface,
 
 
 
-
-
 #########################################################################################
-#### QUESTION 9 - POURCENTAGE DE SURVIE ##########################
+#### Quels sont les Pourcentage de survie ##########################
 #########################################################################################
 
 
@@ -508,30 +493,9 @@ barplot( chance_freq$Survival_Rate,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-############################################# PARTIE KOKOU ############################################
-
-#### QUESTION 4
+#########################################################################################
+###Quels sont les catégories des raisons pour lesquels les crash sont arrivés ?
+#########################################################################################
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                 header=TRUE,
@@ -604,7 +568,7 @@ selectSummaryContainingWords <- function (dataFrameToTest, wordsToSearchFor){
   
 }
 
-### Appelle de la fonction avec les categories recherchées.
+### Appel de la fonction avec les categories recherchées.
 bombAttackCrashes <- selectSummaryContainingWords(airPlanesCrashesData,BOMB_ATTACK_CATEGORIES)
 errorCrashes <- selectSummaryContainingWords(airPlanesCrashesData,ERROR_CATEGORIES)
 shotDownCrashes <- selectSummaryContainingWords(airPlanesCrashesData,SHOT_DOWN_CATEGORIES)
@@ -797,7 +761,10 @@ trim <- function (x) {
   gsub("^\\s+|\\s+$", "", x)
 }
 
-################Question 7 #####################
+##################################################################################
+####Quelle est la période de l'année la plus dangereuse et quelles sont les
+####destinations les plus menaçantes ?
+##################################################################################
 
 getMonthFromDate <- function (currentDate){
   if(!isValidEntry(currentDate)){
@@ -849,8 +816,9 @@ for(i in 1:6){
           args.legend = list(x = "topleft"))
 }
 
-
-#### QUESTION 8
+##################################################################################
+#### Top 20 des opérateurs qui ont fait plus de victimes
+##################################################################################
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                 header=TRUE,
