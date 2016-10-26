@@ -11,6 +11,8 @@ names(airplane_table)
 
 #####################################################################################
 
+######################################## PARTIE YURY  #############################################################
+
 #telechargement du package gggmap afin de pouvoir utiliser la fonction afficher_map 
 
 install.packages("ggmap")
@@ -103,7 +105,7 @@ colnames(table_de_fatalites_par_annee) = c("Fatalites", "Annees") #definition du
 sum_des_fatalites_par_annee = NULL #initialisation de la variable
 list_des_sommes_des_fatalites = NULL #initialisation de la variable
 
-#for loop pour trouver la somme du nombres de fatalites pour chaque annee
+#boucle for pour trouver la somme du nombres de fatalites pour chaque annee
 for(i in unique(table_de_fatalites_par_annee$Annees)){
   sum_des_fatalites_par_annee = sum(table_de_fatalites_par_annee$Fatalites[table_de_fatalites_par_annee$Annees==i])
   list_des_sommes_des_fatalites = c(list_des_sommes_des_fatalites, sum_des_fatalites_par_annee)
@@ -133,7 +135,7 @@ plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalit
 sum_des_fatalites_par_location = NULL #initialisation de la variable
 list_des_sommes_des_fatalites_par_location = NULL #initialisation de la variable
 
-#for loop pour trouver la somme du nombres de fatalites pour chaque location
+#boucle for pour trouver la somme du nombres de fatalites pour chaque location
 for(i in unique(airplane_table$Location)){
   sum_des_fatalites_par_location = sum(airplane_table$Fatalities[airplane_table$Location==i])
   list_des_sommes_des_fatalites_par_location = c(list_des_sommes_des_fatalites_par_location, sum_des_fatalites_par_location)
@@ -209,18 +211,21 @@ library(data.table)
 
 #######################
 
-# Read data - We assume the data are located in a folder named data placed in the same location as the code
+# Lecture des donnees
 crashes = read.csv(DATA_FILE_NAME, header=TRUE, sep=",", dec = ",", 
                    fill = TRUE, stringsAsFactors=TRUE)
 
-# Replace column name 'Flight..' by 'Flight' to keep our sanity
+# Remplacement du nom de colonne 'Flight..' par 'Flight' 
 names(crashes)[names(crashes) == 'Flight..'] <- 'Flight'
 
+# Liste des provinces canadiennes - Servira a determiner si le pays est canada 
+# la library states existe pour les Etats-Unis
 canada = c('Nunavut', 'Quebec', 'Northwest Territories', 'Ontario',
            'British Columbia', 'Alberta', 'Saskatchewan', 'Manitoba',
            'Yukon', 'Newfoundland and Labrador', 'New Brunswick',
            'Nova Scotia', 'Prince Edward Island')
 
+# Erreurs dans les pays - cle=nom incorrect - valeur = nom corrige
 errors = list( "(Bolivia"="Bolivia", "(Russia"="Russia", 
                "Afghanstan"='Afghanistan', 'Airzona'='Arizona',
                "Alaksa"="Alaska", "Alakska"="Alaska", "Arazona"="Arizona",
@@ -255,14 +260,14 @@ sea_words = c('Sea', 'Ocean', 'Channel', 'Mediterranean', 'miles', 'Gulf', 'Stra
 colors = sample(colors())
 training_words = c('Test', 'Training', 'Demonstration')
 
-fix_country_name <- function(input){  # return corrected country if possible
+fix_country_name <- function(input){  # Cette fonction retourne le nom corrige du pays si possible
   if(input %in% names(errors))
     return(errors[[input]])
   else
     return(input)
 }
 
-get_surface <- function(input){ # return either "Land" or "Sea"
+get_surface <- function(input){ # retourne "Land" or "Sea" - utile pour savoir si le lieu est sur la terre ferme ou pas
   if(is.na(input))
     return(NA)
   
@@ -273,7 +278,7 @@ get_surface <- function(input){ # return either "Land" or "Sea"
   return('Land')
 }
 
-get_activity <- function(input){
+get_activity <- function(input){ # cette fonction determine si l'activite est un entrainement ou pas
   if(is.na(input))
     return(NA)
   
@@ -284,13 +289,15 @@ get_activity <- function(input){
   return('NO-Training')
 }
 
-get_survivor_rate <- function(aboard, fatalities){
+get_survivor_rate <- function(aboard, fatalities){  # Quelle sont les chances de survie
   aboard = as.numeric(aboard)
   fatalities = as.numeric(fatalities)
   return( (aboard-fatalities)*100/aboard )
 }
 
-# Prepping the data -> Build dataframe
+# Preparation des donnes - La fonction apply ci dessous joue le meme role qu'une bouble for
+# cependant, elle est plus rapide. Des nouvelles colonnes sont ajoutees pour
+# augmenter les donness brutes
 crashes = as.data.frame( t(
   apply(crashes, 1, function(row) {  # use apply instead of loop
     if(grepl("Military", row['Operator']) || grepl("Air Force", row['Operator']) 
@@ -309,8 +316,8 @@ crashes = as.data.frame( t(
     
     if( is.na(country)){
       loc2 = unlist(strsplit(count2,' '), use.names=FALSE)
-      loc3 = tail(loc2, n=1)    # last element in the array
-      loc4 = tail(loc2, n=2)[1] # one before the last element
+      loc3 = tail(loc2, n=1)   
+      loc4 = tail(loc2, n=2)[1]
       
       if(!is.na(loc3) && (loc3 %in% sea_words) )
         loc3 = country = paste(loc4, loc3, sep=" ")
@@ -348,11 +355,11 @@ crashes$Survival_Rate <- as.numeric(as.character(crashes$Survival_Rate))
 
 
 #########################################################################################
-#Question 5: Quels sont les endroits les plus dangereuses 
+#Question 5: Quels sont les endroits les plus dangereux
 #########################################################################################
 
 
-# top15 - accidents / country where crash happened
+# top15 - accidents / pays
 crash_freq = count(crashes, 'CrashCountry')
 crash_freq = as.data.frame(crash_freq[order(crash_freq$freq, decreasing = TRUE),])
 names(crash_freq)[names(crash_freq) == 'freq'] <- 'Plane_Crashes_by_Country'
@@ -365,7 +372,7 @@ names(crash_dest_freq)[names(crash_dest_freq) == 'freq'] <- 'Crashes_by_Destinat
 crash_dest_freq = crash_dest_freq[! crash_dest_freq$DestinationCity %in% c('Training', NA, 'Test flight', 'Sightseeing'),]
 top15_crash_dest_freq = head(crash_dest_freq, n = 10)
 
-# accidents / countries / flight categories
+# accidents / pays / categories de vols
 cr_cat_freq = count(crashes, c('CrashCountry','Category'))
 cr_cat_freq = as.data.frame(cr_cat_freq[order(cr_cat_freq$freq, decreasing = TRUE),])
 names(cr_cat_freq)[names(cr_cat_freq) == 'freq'] <- 'Number_of_Planes_Crashes'
@@ -373,12 +380,12 @@ names(cr_cat_freq)[names(cr_cat_freq) == 'freq'] <- 'Number_of_Planes_Crashes'
 top15_cr_cat_mil_freq = head(cr_cat_freq[cr_cat_freq$Category=='Military',], n = 10)
 top15_cr_cat_com_freq = head(cr_cat_freq[!cr_cat_freq$Category=='Military',], n = 10)
 
-# Which COuntry has the most military plane crashes - Same as top15_cr_cat_mil_freq
+# pays / accidents d'avions militaires - top15_cr_cat_mil_freq
 #mil_loc_freq = count( crashes[crashes$Category=='Military', ] , 'CrashCountry' )
 #mil_loc_freq = as.data.frame(mil_loc_freq[order(mil_loc_freq$freq, decreasing = TRUE),])
 #names(mil_loc_freq)[names(mil_loc_freq) == 'freq'] <- 'Military_Plane_Crashes_per_Country'
 
-#--- PLOTS QUESTION 1
+#--- Graphiques QUESTION 1
 colors = sample(colors)
 par(mfrow=c(3,1))
 barplot( top15_crash_freq$Plane_Crashes_by_Country, names.arg = top15_crash_freq$CrashCountry,
@@ -421,9 +428,7 @@ cat_freq = count(crashes, 'Category')
 cat_freq = as.data.frame(cat_freq[order(cat_freq$freq, decreasing = TRUE),])
 names(cat_freq)[names(cat_freq) == 'freq'] <- 'Plane_Crashes_by_Category'
 
-#TODO: Chart + Explanation
-
-# Do planes have the most accidents at Sea or in Land
+# Est ce que les avions s'ecrasent plus souvent sur la terre ou la mer
 sur_freq = count(crashes, c('Surface','Category'))
 sur_freq = as.data.frame(sur_freq[order(sur_freq$freq, decreasing = TRUE),])
 names(sur_freq)[names(sur_freq) == 'freq'] <- 'Plane_Crashes_Per_Surface'
@@ -432,7 +437,7 @@ sur_freq[is.na(sur_freq)] = 'Unknown'
 sur_mil_freq = sur_freq[sur_freq$Category=='Military',]
 sur_com_freq = sur_freq[!sur_freq$Category=='Military',]
 
-#--- PLOTS 
+#--- Graphiques
 colors = sample(colors)
 pie( cat_freq$Plane_Crashes_by_Category, labels = cat_freq$Category,
      sub="Categories of plane crashes", col=colors)
@@ -466,7 +471,7 @@ chance_com_freq$During_Trainig = paste("Commercial", chance_com_freq$During_Trai
 
 chance_freq = rbind( chance_mil_freq[,2-3], chance_com_freq[,2-3] )
 
-# PLOTS
+# graphique
 par(mfrow=c(1,1))
 colors = sample(colors)
 barplot( chance_freq$Survival_Rate, 
@@ -475,6 +480,8 @@ barplot( chance_freq$Survival_Rate,
          col=colors, ylab = "Probability of Survival")
 
 
+
+######################################## PARTIE KOKOU  #############################################################
 
 #########################################################################################
 # Question 8: Quelles sont les causes principales des écrasements d'avions?
