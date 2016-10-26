@@ -11,7 +11,7 @@ names(airplane_table)
 
 #####################################################################################
 
-#loader les packages avant de pouvoir utiliser la fonction afficher_map 
+#telechargement du package gggmap afin de pouvoir utiliser la fonction afficher_map 
 
 install.packages("ggmap")
 library(ggmap)
@@ -26,8 +26,7 @@ library(maps)
 trouver_frequence= function(firstVector, secondVector){
   #cette fonction a pour but de trouver la frequence des variables specifiées
   #inclus dans le vecteur1 (firstVector) dans le deuxieme vecteur (secondVector)
-  
-  
+
   occurence_total = 0 #initialisation de la variable occurence_total
   for(i in firstVector){
     occurence = 0
@@ -43,8 +42,7 @@ trouver_frequence= function(firstVector, secondVector){
 
 afficher_map = function(visited){
   #cette fonction affiche sur une map une series de ville basee sur leurs coordonees geo 
-  #il faut passer un vecteur 
-  
+  #un vecteur doit avec des noms de villes et pays doit etre en input
   
   ll.visited = geocode(visited)
   visit.x = ll.visited$lon
@@ -63,10 +61,8 @@ afficher_map = function(visited){
 
 
 #####################################################################################
-#Nombre total de crash a travers le temps
+# Question 1: Nombre total d'ecrasement à travers le temps
 #####################################################################################
-
-
 
 #préparation des données
 
@@ -95,10 +91,8 @@ plot(x = table_occurence_annee$Annee, y = table_occurence_annee$Occurence, type=
 
 
 #####################################################################################
-#Nombre de fatalites par Annees travers le temps
+#Question 2: Nombre de fatalites par Année à travers le temps
 #####################################################################################
-
-
 
 #preparation des donnees
 
@@ -131,9 +125,8 @@ plot(x = table_des_sommes_des_fatalites$Annees, y = table_des_sommes_des_fatalit
 
 
 
-
 #####################################################################################
-#Plus grand nombres de fatalites par location 
+#Question 3: Nombres de fatalités par localisation
 #####################################################################################
 
 
@@ -174,9 +167,7 @@ afficher_map(top_50_villes_par_fatalites_en_string) #appel de la fonction affich
 
 
 #####################################################################################
-#le nombre de crashs par endroit(location) 
-#question repondu en affichant un tableau de type data.frame et en representant sur un map 
-#le top 50 des locations ou il y a eu des crash
+#Question 4: le nombre de crashs par localisation
 #####################################################################################
 
 
@@ -208,14 +199,6 @@ for(i in 1:50){
 }
 
 afficher_map(vecteur_de_ville_frequence_de_crashs)
-
-
-
-
-
-
-
-
 
 
 ######################################## PARTIE WILLIAM #############################################################
@@ -365,7 +348,7 @@ crashes$Survival_Rate <- as.numeric(as.character(crashes$Survival_Rate))
 
 
 #########################################################################################
-### Quelles sont les places les plus dangereuses ###  
+#Question 5: Quels sont les endroits les plus dangereuses 
 #########################################################################################
 
 
@@ -429,7 +412,7 @@ barplot( top15_crash_dest_freq$Crashes_by_Destination, names.arg = top15_crash_d
 
 
 #########################################################################################
-### Quelles sont les catégories d'avion les plus dangereux
+#Question 6: Quel est le risque selon le type d'avion?
 #########################################################################################
 
 
@@ -466,7 +449,7 @@ pie( sur_com_freq$Plane_Crashes_Per_Surface, labels = sur_com_freq$Surface,
 
 
 #########################################################################################
-#### Quels sont les Pourcentage de survie ##########################
+# Question 7: Quels sont les Pourcentage de survie selon le type d'avions
 #########################################################################################
 
 
@@ -494,7 +477,7 @@ barplot( chance_freq$Survival_Rate,
 
 
 #########################################################################################
-###Quels sont les catégories des raisons pour lesquels les crash sont arrivés ?
+# Question 8: Quelles sont les causes principales des écrasements d'avions?
 #########################################################################################
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
@@ -589,7 +572,7 @@ pie(slices,labels = lbls, col=rainbow(length(lbls)),
     main="Pie Chart of Crashes")
 
 
-#####QUESTION 7
+#####QUESTION 7 ##******************** Pourquoi est-ce que c'est ecrit question 7 ici  ???? Est-ce que cela fait partie de la question 8
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                 header=TRUE,
@@ -762,8 +745,8 @@ trim <- function (x) {
 }
 
 ##################################################################################
-####Quelle est la période de l'année la plus dangereuse et quelles sont les
-####destinations les plus menaçantes ?
+#Question 9: Quelle est la période de l'année la plus dangereuse et quelles sont les
+#destinations les plus menaçantes ?
 ##################################################################################
 
 getMonthFromDate <- function (currentDate){
@@ -817,7 +800,7 @@ for(i in 1:6){
 }
 
 ##################################################################################
-#### Top 20 des opérateurs qui ont fait plus de victimes
+#Question 10: Quels sont les opérateurs qui ont fait le plus de victimes
 ##################################################################################
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
