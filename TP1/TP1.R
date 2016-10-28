@@ -203,7 +203,7 @@ for(i in 1:50){
 afficher_map(vecteur_de_ville_frequence_de_crashs)
 
 
-######################################## PARTIE WILLIAM #############################################################
+######################################## Préparation des données pourquestions 5,6 et 7 ###############################################
 
 #import packages
 library(plyr)
@@ -481,7 +481,7 @@ barplot( chance_freq$Survival_Rate,
 
 
 
-######################################## PARTIE KOKOU  #############################################################
+######################################## Question 8,9,10  #############################################################
 
 #########################################################################################
 # Question 8: Quelles sont les causes principales des écrasements d'avions?
@@ -579,7 +579,6 @@ pie(slices,labels = lbls, col=rainbow(length(lbls)),
     main="Pie Chart of Crashes")
 
 
-#####QUESTION 7 ##******************** Pourquoi est-ce que c'est ecrit question 7 ici  ???? Est-ce que cela fait partie de la question 8
 
 airPlanesCrashesData = read.csv(DATA_FILE_NAME, 
                                 header=TRUE,
